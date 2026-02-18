@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 100">
+  <defs>
+    <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6C5CE7"/>
+      <stop offset="50%" stop-color="#A29BFE"/>
+      <stop offset="100%" stop-color="#6C5CE7"/>
+    </linearGradient>
+  </defs>
+  <!-- Vertical pillar with rounded ends -->
+  <rect x="5" y="3" width="25" height="94" rx="12.5" ry="12.5" fill="url(#tg)"/>
+  <!-- Decorative notch top -->
+  <circle cx="17.5" cy="20" r="6" fill="#FFF" opacity="0.3"/>
+  <!-- Decorative notch middle -->
+  <rect x="12" y="44" width="11" height="12" rx="3" fill="#FFF" opacity="0.25"/>
+  <!-- Decorative notch bottom -->
+  <circle cx="17.5" cy="76" r="5" fill="#FFF" opacity="0.2"/>
+</svg>
