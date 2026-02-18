@@ -16,6 +16,40 @@ interface LogoLaneProps {
 const MIN_CELL = 80
 const MAX_CELL = 160
 
+async function processFiles(files: FileList | File[]): Promise<LogoMeta[]> {
+  const newLogos: LogoMeta[] = []
+  for (const file of Array.from(files)) {
+    if (!file.type.startsWith('image/')) continue
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result as string)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
+
+      const { width, height } = await new Promise<{ width: number; height: number }>((resolve, reject) => {
+        const img = new Image()
+        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
+        img.onerror = reject
+        img.src = dataUrl
+      })
+
+      if (width > 0 && height > 0) {
+        newLogos.push({
+          id: `upload-${Date.now()}-${newLogos.length}`,
+          name: file.name.replace(/\.[^.]+$/, ''),
+          ratio: width / height,
+          src: dataUrl,
+        })
+      }
+    } catch {
+      // Skip invalid files
+    }
+  }
+  return newLogos
+}
+
 export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, hasCustomLogos }: LogoLaneProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -24,6 +58,7 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
   const [showBounds, setShowBounds] = useState(true)
   const [showDimensions, setShowDimensions] = useState(false)
   const [gridMode, setGridMode] = useState(false)
+  const [dragging, setDragging] = useState(false)
 
   useEffect(() => {
     const el = containerRef.current
@@ -62,46 +97,50 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
   const handleFiles = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files || files.length === 0) return
-
-    const newLogos: LogoMeta[] = []
-    for (const file of Array.from(files)) {
-      try {
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onload = () => resolve(reader.result as string)
-          reader.onerror = reject
-          reader.readAsDataURL(file)
-        })
-
-        const { width, height } = await new Promise<{ width: number; height: number }>((resolve, reject) => {
-          const img = new Image()
-          img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
-          img.onerror = reject
-          img.src = dataUrl
-        })
-
-        if (width > 0 && height > 0) {
-          newLogos.push({
-            id: `upload-${Date.now()}-${newLogos.length}`,
-            name: file.name.replace(/\.[^.]+$/, ''),
-            ratio: width / height,
-            src: dataUrl,
-          })
-        }
-      } catch {
-        // Skip invalid files
-      }
-    }
-
+    const newLogos = await processFiles(files)
     if (newLogos.length > 0) onUpload(newLogos)
     e.target.value = ''
   }, [onUpload])
 
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setDragging(true)
+  }, [])
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return
+    setDragging(false)
+  }, [])
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragging(false)
+    const files = e.dataTransfer.files
+    if (!files || files.length === 0) return
+    const newLogos = await processFiles(files)
+    if (newLogos.length > 0) onUpload(newLogos)
+  }, [onUpload])
+
   return (
     <div
+      id="logo-lane"
       ref={containerRef}
-      className="rounded-2xl border border-zinc-100 p-3 sm:p-6 dark:border-zinc-700/40"
+      className={`relative rounded-2xl border p-3 sm:p-6 transition-colors ${
+        dragging
+          ? 'border-zinc-400 bg-zinc-50 dark:border-zinc-500 dark:bg-zinc-800/50'
+          : 'border-zinc-100 dark:border-zinc-700/40'
+      }`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
     >
+      {/* Drop zone overlay */}
+      {dragging && (
+        <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-zinc-100/80 dark:bg-zinc-800/80 backdrop-blur-sm z-10">
+          <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Drop images here</p>
+        </div>
+      )}
+
       {/* Toolbar */}
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div className="flex items-center gap-1.5">
@@ -112,14 +151,17 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="px-2.5 py-1 rounded-md text-xs font-medium transition-colors duration-150 bg-zinc-100 text-zinc-500 hover:text-zinc-700 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-colors duration-150 bg-zinc-100 text-zinc-500 hover:text-zinc-700 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300"
           >
+            <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M6 2v8M2 6h8" />
+            </svg>
             Upload
           </button>
           {hasCustomLogos && (
             <button
               onClick={onRemoveAll}
-              className="px-2.5 py-1 rounded-md text-xs font-medium transition-colors duration-150 bg-zinc-100 text-zinc-500 hover:text-zinc-700 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300"
+              className="px-2.5 py-1 rounded-full text-xs font-medium transition-colors duration-150 bg-zinc-100 text-zinc-500 hover:text-zinc-700 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300"
             >
               Remove All
             </button>
@@ -130,22 +172,27 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
       {/* Logo display */}
       <div
         ref={scrollRef}
-        className={`flex items-center justify-center gap-3 sm:gap-4 py-1 ${
+        className={`flex items-center justify-center gap-3 sm:gap-4 px-2 py-1 ${
           gridMode ? 'flex-wrap' : 'overflow-x-auto'
         }`}
       >
-        {logos.map((logo) => {
+        {logos.map((logo, i) => {
           const size = computeLogoSize(logo.ratio, cellSize, params)
           return (
-            <LogoItem
+            <div
               key={logo.id}
-              logo={logo}
-              size={size}
-              cellSize={cellSize}
-              showBounds={showBounds}
-              showDimensions={showDimensions}
-              onRemove={hasCustomLogos ? () => onRemoveLogo(logo.id) : undefined}
-            />
+              className="animate-in"
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              <LogoItem
+                logo={logo}
+                size={size}
+                cellSize={cellSize}
+                showBounds={showBounds}
+                showDimensions={showDimensions}
+                onRemove={hasCustomLogos ? () => onRemoveLogo(logo.id) : undefined}
+              />
+            </div>
           )
         })}
       </div>
@@ -167,7 +214,7 @@ function ToggleBtn({ active, onClick, children }: { active: boolean; onClick: ()
   return (
     <button
       onClick={onClick}
-      className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors duration-150 ${
+      className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors duration-150 ${
         active
           ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
           : 'bg-zinc-100 text-zinc-500 hover:text-zinc-700 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300'

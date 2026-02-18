@@ -30,7 +30,7 @@ export function RatioExplorer({ params }: RatioExplorerProps) {
       </div>
       <div className="flex items-center gap-6">
         <div
-          className="flex items-center justify-center border border-dashed border-zinc-300 dark:border-zinc-600 rounded-lg shrink-0"
+          className="flex items-center justify-center border border-dotted border-zinc-300 dark:border-zinc-600 rounded-lg shrink-0"
           style={{ width: CELL, height: CELL }}
         >
           <div

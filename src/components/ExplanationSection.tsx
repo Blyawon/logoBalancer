@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
 import type { BalancerParams } from '@/lib/balancer'
 import type { LogoMeta } from '@/lib/logos'
-import { computeLogoSize } from '@/lib/balancer'
+import { FORMULA_CODE, LLM_PROMPT, EXPONENTS, CODE_TABS, generateExportCode } from '@/lib/content'
 import { MiniLane } from './MiniLane'
 import { ExponentSpectrum } from './ExponentSpectrum'
 import { PerceivedWeightBars } from './PerceivedWeightBars'
@@ -12,136 +12,6 @@ interface ExplanationSectionProps {
   params: BalancerParams
   logos: LogoMeta[]
   onParamsChange: (params: BalancerParams) => void
-}
-
-const FORMULA_CODE = `function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
-}
-
-/**
- * Power-law width mapping for visual balance.
- *
- * width  = cell × baseline × r^exponent × scale
- * height = width / r
- *
- * Key exponents:
- *   0.0  → equal width  (no correction)
- *   0.5  → equal area   (w × h = const)
- *   0.75 → optical balance (w^¼ × h^¾ = const)
- *   1.0  → equal height (h = const)
- *
- * Max safe exponent (avoids overflow):
- *   e_max = ln(fitPercent / (baseline × scale)) / ln(ratioMax)
- */
-function widthFraction(ratio, { baseline, exponent, ratioMin, ratioMax }) {
-  const r = clamp(ratio, ratioMin, ratioMax);
-  return baseline * Math.pow(r, exponent);
-}
-
-// Compute final logo dimensions within a square cell
-function computeLogoSize(ratio, cellSize, params) {
-  const wFrac = widthFraction(ratio, params);
-  const safeBox = cellSize * params.fitPercent;
-
-  let width = cellSize * wFrac * params.scale;
-  let height = width / ratio;
-
-  // Fit-clamp: prevent overflow on either axis
-  const fit = Math.min(1, safeBox / width, safeBox / height);
-  width *= fit;
-  height *= fit;
-
-  return { width, height };
-}`
-
-const LLM_PROMPT = `Visually balance logos of different aspect ratios in a row.
-
-Problem:
-  Logos given equal width look uneven — portrait logos dominate
-  because the eye weighs height more than width.
-
-Solution — power-law width mapping:
-
-  ratio = naturalWidth / naturalHeight
-  ratio = clamp(ratio, ratioMin, ratioMax)
-  widthFraction = baseline * ratio ^ exponent
-  width = cellSize * widthFraction * scale
-  height = width / ratio
-
-  Fit-clamp to prevent overflow:
-    safeBox = cellSize * fitPercent
-    fit = min(1, safeBox / width, safeBox / height)
-    width *= fit
-    height *= fit
-
-Parameters:
-  baseline   = 0.46  width fraction for a square logo (ratio = 1)
-  exponent   = 0.75  balance strategy
-  ratioMin   = 0.35  clamp for extreme portrait ratios
-  ratioMax   = 6.0   clamp for extreme landscape ratios
-  scale      = 0.57  global size multiplier
-  fitPercent = 0.73  max fraction of cell on either axis
-
-Key exponents:
-  0    equal width  (no correction)
-  0.5  equal area   (w * h = const)
-  0.75 optical      (w^0.25 * h^0.75 = const)
-  1.0  equal height (h = const)
-
-Why 0.75?
-  Perceived size ~ w^0.25 * h^0.75.
-  Setting exponent = 0.75 equalizes this metric,
-  giving every logo the same visual weight.`
-
-const EXPONENTS = [
-  { value: 0, label: 'e = 0', desc: 'Equal width \u2014 no correction', highlight: false },
-  { value: 0.5, label: 'e = 0.5', desc: 'Equal area \u2014 mathematically tidy', highlight: false },
-  {
-    value: 0.75,
-    label: 'e = 0.75',
-    desc: 'Optical balance',
-    extra: ' \u2014 w\u00b9\u2044\u2074 \u00d7 h\u00b3\u2044\u2074 = const',
-    highlight: true,
-  },
-  { value: 1.0, label: 'e = 1.0', desc: 'Equal height \u2014 overcorrects for wide logos', highlight: false },
-]
-
-const CODE_TABS = [
-  { id: 'formula' as const, label: 'Formula', desc: null },
-  { id: 'export' as const, label: 'Export', desc: 'Self-contained function with your current parameters. Updates live as you move the sliders.' },
-  { id: 'prompt' as const, label: 'AI Prompt', desc: 'Paste this into any LLM to implement the balancing logic in your project.' },
-]
-
-function generateExportCode(params: BalancerParams, logos: LogoMeta[]): string {
-  const sizes = logos
-    .map((logo) => {
-      const size = computeLogoSize(logo.ratio, 100, params)
-      return `//   ${logo.name} (r=${logo.ratio.toFixed(2)}): ${Math.round(size.width)}\u00d7${Math.round(size.height)}`
-    })
-    .join('\n')
-
-  return `// Logo Balancer — drop into your project
-const config = {
-  baseline: ${params.baseline},
-  exponent: ${params.exponent},
-  ratioMin: ${params.ratioMin},
-  ratioMax: ${params.ratioMax},
-  scale: ${params.scale},
-  fitPercent: ${params.fitPercent},
-};
-
-function getLogoSize(ratio, cellSize) {
-  const r = Math.max(config.ratioMin, Math.min(config.ratioMax, ratio));
-  const wFrac = config.baseline * Math.pow(r, config.exponent);
-  const safeBox = cellSize * config.fitPercent;
-  let w = cellSize * wFrac * config.scale;
-  let h = w / ratio;
-  const fit = Math.min(1, safeBox / w, safeBox / h);
-  return { width: w * fit, height: h * fit };
-}
-
-// Sizes at cellSize = 100:
-${sizes}`
 }
 
 function Code({ children }: { children: React.ReactNode }) {
@@ -205,7 +75,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
         {/* The Problem */}
         <section className="space-y-4">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500">
-            The Problem
+            <span className="text-zinc-300 dark:text-zinc-700 mr-2">01</span>The Problem
           </h3>
           <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl">
             When you line up logos in a row and give them all the same width,
@@ -225,7 +95,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             </div>
             <div className="space-y-2">
               <span className="block text-xs font-medium text-zinc-400 dark:text-zinc-500">
-                Optical (e = 0.75)
+                Visual (e = 0.75)
               </span>
               <MiniLane params={params} exponentOverride={0.75} cellSize={40} />
             </div>
@@ -235,7 +105,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
         {/* The Insight */}
         <section className="space-y-4">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500">
-            The Insight
+            <span className="text-zinc-300 dark:text-zinc-700 mr-2">02</span>The Insight
           </h3>
           <div className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl space-y-3">
             <p>
@@ -273,7 +143,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
         {/* The Math */}
         <section className="space-y-4">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500">
-            The Math
+            <span className="text-zinc-300 dark:text-zinc-700 mr-2">03</span>The Math
           </h3>
           <div className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl space-y-4">
             <p>
@@ -345,7 +215,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
 
         {/* Walkthrough + Explore — side by side on desktop */}
         <div className="grid gap-8 sm:gap-10 lg:grid-cols-2">
-          <section className="space-y-3">
+          <section className="rounded-xl border border-zinc-100 dark:border-zinc-700/40 p-4 sm:p-5 space-y-3">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500">
               Walkthrough
             </h3>
@@ -355,7 +225,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             <FormulaWalkthrough params={params} logos={logos} />
           </section>
 
-          <section className="space-y-3">
+          <section className="rounded-xl border border-zinc-100 dark:border-zinc-700/40 p-4 sm:p-5 space-y-3">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500">
               Explore
             </h3>
@@ -379,7 +249,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
         {/* Tabbed card */}
         <div className="rounded-2xl border border-zinc-200 dark:border-zinc-700/40 overflow-hidden">
           {/* Tab bar */}
-          <div className="flex items-center gap-1 px-2 py-2 border-b border-zinc-100 dark:border-zinc-700/40 bg-zinc-50/50 dark:bg-zinc-800/30">
+          <div className="flex items-center gap-1 px-2 py-2 border-b border-zinc-100 dark:border-zinc-700/40 bg-zinc-50 dark:bg-zinc-800/40">
             {CODE_TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -396,9 +266,24 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             <div className="flex-1" />
             <button
               onClick={() => handleCopy(activeTab, tabContent[activeTab])}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
             >
-              {copiedId === activeTab ? 'Copied!' : 'Copy'}
+              {copiedId === activeTab ? (
+                <>
+                  <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2.5 6.5l2.5 2.5 4.5-5" className="animate-check" />
+                  </svg>
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="4" y="4" width="7" height="7" rx="1" />
+                    <path d="M8 4V2.5A1.5 1.5 0 006.5 1h-4A1.5 1.5 0 001 2.5v4A1.5 1.5 0 002.5 8H4" />
+                  </svg>
+                  Copy
+                </>
+              )}
             </button>
           </div>
 

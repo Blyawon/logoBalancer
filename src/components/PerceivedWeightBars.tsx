@@ -26,7 +26,7 @@ export function PerceivedWeightBars({ params, logos }: PerceivedWeightBarsProps)
           </span>
           <div className="flex-1 h-4 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
             <div
-              className="h-full bg-zinc-400 dark:bg-zinc-500 rounded-full transition-all duration-300"
+              className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300 dark:from-zinc-400 dark:to-zinc-600 rounded-full transition-all duration-300"
               style={{ width: `${(d.pw / maxPw) * 100}%` }}
             />
           </div>

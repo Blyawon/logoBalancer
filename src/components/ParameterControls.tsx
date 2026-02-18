@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import type { BalancerParams } from '@/lib/balancer'
-import { PRESETS } from '@/lib/presets'
+import { PRESETS, DEFAULT_PARAMS } from '@/lib/presets'
 import { Slider } from '@/components/ui/slider'
 
 interface ParameterControlsProps {
@@ -34,7 +34,7 @@ const SLIDER_CONFIGS: SliderConfig[] = [
     min: 0,
     max: 1.0,
     step: 0.01,
-    description: '0 = equal width, 0.5 = equal area, 0.75 = optical',
+    description: '0 = equal width, 0.5 = equal area, 0.75 = visual',
   },
   {
     key: 'ratioMin',
@@ -129,7 +129,7 @@ function EditableValue({
   return (
     <button
       onClick={startEdit}
-      className="text-sm font-mono tabular-nums text-zinc-900 dark:text-zinc-100 hover:text-sky-600 dark:hover:text-sky-400 cursor-text transition-colors"
+      className="text-sm font-mono tabular-nums text-zinc-900 dark:text-zinc-100 hover:text-sky-600 dark:hover:text-sky-400 hover:underline hover:decoration-dotted hover:underline-offset-2 cursor-text transition-colors"
       title="Click to edit"
     >
       {value.toFixed(2)}
@@ -147,6 +147,24 @@ export function ParameterControls({
     onParamsChange({ ...params, [key]: value })
   }
 
+  function handleDoubleClickLabel(key: keyof BalancerParams) {
+    onParamsChange({ ...params, [key]: DEFAULT_PARAMS[key] })
+  }
+
+  // Keyboard shortcuts: 1-4 for presets
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      const tag = (e.target as HTMLElement).tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return
+      const idx = parseInt(e.key) - 1
+      if (idx >= 0 && idx < PRESETS.length) {
+        onPresetChange(PRESETS[idx].id)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [onPresetChange])
+
   const activeDescription = activePreset
     ? PRESETS.find((p) => p.id === activePreset)?.description
     : null
@@ -156,19 +174,31 @@ export function ParameterControls({
       {/* Preset Pills */}
       <div className="space-y-2">
         <div className="flex items-center gap-2 flex-wrap">
-          {PRESETS.map((preset) => (
+          {PRESETS.map((preset, i) => (
             <button
               key={preset.id}
-              onClick={() => onPresetChange(preset.id)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-150 ${
+              onClick={() => {
+                onPresetChange(preset.id)
+                document.getElementById('logo-lane')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              }}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-150 ${
                 activePreset === preset.id
-                  ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+                  ? 'bg-zinc-900 text-white ring-2 ring-zinc-900/10 dark:bg-white dark:text-zinc-900 dark:ring-white/10'
                   : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-200'
               }`}
+              title={`Press ${i + 1} to activate`}
             >
               {preset.name}
             </button>
           ))}
+          {!activePreset && (
+            <button
+              onClick={() => onPresetChange('visual')}
+              className="px-3 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors"
+            >
+              Reset
+            </button>
+          )}
         </div>
         {activeDescription && (
           <p className="text-xs text-zinc-400 dark:text-zinc-500">
@@ -177,12 +207,19 @@ export function ParameterControls({
         )}
       </div>
 
+      {/* Divider */}
+      <div className="border-t border-zinc-100 dark:border-zinc-700/40" />
+
       {/* Slider Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
         {SLIDER_CONFIGS.map((config) => (
           <div key={config.key} className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
+              <span
+                className="text-sm font-medium text-zinc-700 dark:text-zinc-200 cursor-default select-none"
+                onDoubleClick={() => handleDoubleClickLabel(config.key)}
+                title="Double-click to reset"
+              >
                 {config.label}
               </span>
               <EditableValue
@@ -200,7 +237,7 @@ export function ParameterControls({
               step={config.step}
               onValueChange={([v]) => handleSliderChange(config.key, v)}
             />
-            <p className="text-xs text-zinc-400 dark:text-zinc-500 leading-snug">
+            <p className="text-xs text-zinc-300 dark:text-zinc-600 leading-snug">
               {config.description}
             </p>
           </div>

@@ -15,7 +15,7 @@ export function LogoItem({ logo, size, cellSize, showBounds = true, showDimensio
     <div className="flex flex-col items-center gap-3 min-w-0">
       <div
         className={`relative flex items-center justify-center rounded-lg transition-colors duration-150 ${
-          showBounds ? 'border border-dashed border-zinc-200 dark:border-zinc-700/40' : ''
+          showBounds ? 'border border-dotted border-zinc-200 dark:border-zinc-700/40' : ''
         }`}
         style={{
           width: cellSize,
@@ -37,14 +37,16 @@ export function LogoItem({ logo, size, cellSize, showBounds = true, showDimensio
         {onRemove && (
           <button
             onClick={onRemove}
-            className="absolute top-1 right-1 w-5 h-5 rounded-full bg-zinc-200/90 dark:bg-zinc-700/90 text-zinc-500 dark:text-zinc-400 text-xs leading-none flex items-center justify-center hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors backdrop-blur-sm"
+            className="absolute top-1 right-1 w-5 h-5 rounded-full bg-zinc-200/90 dark:bg-zinc-700/90 flex items-center justify-center hover:bg-zinc-300 dark:hover:bg-zinc-600 hover:scale-110 transition-all backdrop-blur-sm"
           >
-            &times;
+            <svg className="w-2.5 h-2.5 text-zinc-500 dark:text-zinc-400" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M2 2l6 6M8 2l-6 6" />
+            </svg>
           </button>
         )}
       </div>
       <div className="flex flex-col items-center gap-0.5">
-        <span className="text-sm font-medium text-zinc-800 dark:text-zinc-100 truncate max-w-full">{logo.name}</span>
+        <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-800 dark:text-zinc-100 truncate max-w-full">{logo.name}</span>
         <span className="text-xs font-mono tabular-nums text-zinc-400 dark:text-zinc-500">
           {showDimensions
             ? `${Math.round(size.width)}\u00d7${Math.round(size.height)}`

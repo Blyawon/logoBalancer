@@ -1,6 +1,6 @@
 export interface BalancerParams {
   baseline: number    // Width fraction for a square logo (ratio = 1)
-  exponent: number    // Power exponent — 0 = equal width, 0.5 = equal area, 0.75 = optical, 1 = equal height
+  exponent: number    // Power exponent — 0 = equal width, 0.5 = equal area, 0.75 = visual, 1 = equal height
   ratioMin: number    // Clamp floor for extreme portrait ratios
   ratioMax: number    // Clamp ceiling for extreme landscape ratios
   scale: number       // Global scale multiplier
@@ -20,7 +20,7 @@ function clamp(value: number, min: number, max: number): number {
  * Key exponents:
  *   0.0  → equal width  (no correction)
  *   0.5  → equal area   (w × h = const)
- *   0.75 → optical balance (w^¼ × h^¾ = const)
+ *   0.75 → visual balance (w^¼ × h^¾ = const)
  *   1.0  → equal height (h = const)
  *
  * Max safe exponent (avoids overflow):

@@ -63,7 +63,7 @@ export function ExponentSpectrum({ params, onExponentChange }: ExponentSpectrumP
       <div className="flex items-center gap-3">
         <button
           onClick={togglePlay}
-          className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+          className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors ${!playing ? 'animate-pulse-ring' : ''}`}
           aria-label={playing ? 'Pause' : 'Play'}
         >
           {playing ? (

@@ -9,9 +9,22 @@ export interface Preset {
 
 export const PRESETS: Preset[] = [
   {
+    id: 'visual',
+    name: 'Visual',
+    description: 'Perceptually balanced \u2014 gives every logo the same visual weight (exponent = \u00be)',
+    params: {
+      baseline: 0.46,
+      exponent: 0.75,
+      ratioMin: 0.35,
+      ratioMax: 6.0,
+      scale: 0.57,
+      fitPercent: 0.73,
+    },
+  },
+  {
     id: 'equal-width',
     name: 'Equal Width',
-    description: 'Same width for every logo — shows the problem (exponent = 0)',
+    description: 'Same width for every logo \u2014 shows the problem (exponent = 0)',
     params: {
       baseline: 1.0,
       exponent: 0,
@@ -24,7 +37,7 @@ export const PRESETS: Preset[] = [
   {
     id: 'equal-area',
     name: 'Equal Area',
-    description: 'Equal bounding-box area (exponent = ½)',
+    description: 'Equal bounding-box area (exponent = \u00bd)',
     params: {
       baseline: 0.48,
       exponent: 0.5,
@@ -32,19 +45,6 @@ export const PRESETS: Preset[] = [
       ratioMax: 6.0,
       scale: 1.0,
       fitPercent: 0.96,
-    },
-  },
-  {
-    id: 'optical',
-    name: 'Optical',
-    description: 'Perceptually balanced — w^¼ × h^¾ = const (exponent = ¾)',
-    params: {
-      baseline: 0.46,
-      exponent: 0.75,
-      ratioMin: 0.35,
-      ratioMax: 6.0,
-      scale: 0.57,
-      fitPercent: 0.73,
     },
   },
   {
@@ -62,4 +62,4 @@ export const PRESETS: Preset[] = [
   },
 ]
 
-export const DEFAULT_PARAMS: BalancerParams = PRESETS[2].params
+export const DEFAULT_PARAMS: BalancerParams = PRESETS[0].params

@@ -58,3 +58,55 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* Logo entrance stagger animation */
+.animate-in {
+  animation: fadeSlideUp 400ms ease-out both;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Copy checkmark draw animation */
+.animate-check {
+  stroke-dasharray: 12;
+  stroke-dashoffset: 12;
+  animation: drawCheck 300ms ease-out forwards;
+}
+
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Play button idle pulse */
+.animate-pulse-ring {
+  animation: pulseRing 2s ease-out infinite;
+}
+
+@keyframes pulseRing {
+  0% {
+    box-shadow: 0 0 0 0 rgba(161, 161, 170, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(161, 161, 170, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(161, 161, 170, 0);
+  }
+}
+
+/* Slider thumb active scale */
+[data-slot="slider-thumb"]:active {
+  transform: scale(1.2);
+  transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}

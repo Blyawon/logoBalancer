@@ -11,7 +11,7 @@ import { ExplanationSection } from '@/components/ExplanationSection'
 
 function App() {
   const [params, setParams] = useState<BalancerParams>(DEFAULT_PARAMS)
-  const [activePreset, setActivePreset] = useState<string | null>('optical')
+  const [activePreset, setActivePreset] = useState<string | null>('visual')
   const [customLogos, setCustomLogos] = useState<LogoMeta[]>([])
 
   const handleParamsChange = useCallback((newParams: BalancerParams) => {
@@ -84,9 +84,23 @@ function App() {
                     />
                   </div>
 
-                  <div className="mt-10 sm:mt-20 pb-16 sm:pb-24">
+                  <div className="mt-10 sm:mt-20">
                     <ExplanationSection params={params} logos={displayLogos} onParamsChange={handleParamsChange} />
                   </div>
+
+                  {/* Footer */}
+                  <footer className="mt-16 sm:mt-24 pb-10 sm:pb-16 flex items-center justify-center gap-2 text-xs text-zinc-300 dark:text-zinc-700">
+                    <span>Logo Balancer</span>
+                    <span>&middot;</span>
+                    <a
+                      href="https://github.com/Blyawon/logoBalancer"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-zinc-500 dark:hover:text-zinc-500 transition-colors"
+                    >
+                      GitHub
+                    </a>
+                  </footer>
                 </div>
               </div>
             </div>
