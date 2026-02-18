@@ -194,6 +194,7 @@ export function ParameterControls({
           {!activePreset && (
             <button
               onClick={() => onPresetChange('visual')}
+              title="Reset to Visual preset"
               className="px-3 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors"
             >
               Reset

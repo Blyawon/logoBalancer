@@ -65,6 +65,7 @@ export function ExponentSpectrum({ params, onExponentChange }: ExponentSpectrumP
           onClick={togglePlay}
           className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors ${!playing ? 'animate-pulse-ring' : ''}`}
           aria-label={playing ? 'Pause' : 'Play'}
+          title="Sweep exponent from 0 to 1"
         >
           {playing ? (
             <svg className="w-3 h-3 text-zinc-600 dark:text-zinc-300" fill="currentColor" viewBox="0 0 24 24">

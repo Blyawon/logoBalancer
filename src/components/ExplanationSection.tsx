@@ -28,6 +28,7 @@ function ParamLink({ children }: { children: React.ReactNode }) {
       onClick={() =>
         document.getElementById('controls')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
+      title="Scroll to controls"
       className="text-zinc-900 dark:text-zinc-100 underline decoration-dotted underline-offset-2 hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
     >
       {children}

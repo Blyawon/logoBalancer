@@ -146,9 +146,9 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
       {/* Toolbar */}
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div className="flex items-center gap-1.5">
-          <ToggleBtn active={gridMode} onClick={() => setGridMode(!gridMode)}>Grid</ToggleBtn>
-          <ToggleBtn active={showBounds} onClick={() => setShowBounds(!showBounds)}>Bounds</ToggleBtn>
-          <ToggleBtn active={showDimensions} onClick={() => setShowDimensions(!showDimensions)}>Sizes</ToggleBtn>
+          <ToggleBtn active={gridMode} onClick={() => setGridMode(!gridMode)} title="Wrap logos into a grid">Grid</ToggleBtn>
+          <ToggleBtn active={showBounds} onClick={() => setShowBounds(!showBounds)} title="Show cell boundaries">Bounds</ToggleBtn>
+          <ToggleBtn active={showDimensions} onClick={() => setShowDimensions(!showDimensions)} title="Show pixel dimensions">Sizes</ToggleBtn>
         </div>
         <div className="flex items-center gap-1.5">
           <button
@@ -215,10 +215,11 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
   )
 }
 
-function ToggleBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function ToggleBtn({ active, onClick, title, children }: { active: boolean; onClick: () => void; title?: string; children: React.ReactNode }) {
   return (
     <button
       onClick={onClick}
+      title={title}
       className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors duration-150 ${
         active
           ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'

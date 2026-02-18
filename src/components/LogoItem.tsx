@@ -37,6 +37,7 @@ export function LogoItem({ logo, size, cellSize, showBounds = true, showDimensio
         {onRemove && (
           <button
             onClick={onRemove}
+            title="Remove logo"
             className="absolute top-1 right-1 w-5 h-5 rounded-full bg-zinc-200/90 dark:bg-zinc-700/90 flex items-center justify-center hover:bg-zinc-300 dark:hover:bg-zinc-600 hover:scale-110 transition-all backdrop-blur-sm"
           >
             <svg className="w-2.5 h-2.5 text-zinc-500 dark:text-zinc-400" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
