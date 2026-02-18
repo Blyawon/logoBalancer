@@ -55,6 +55,7 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
   const scrollRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [cellSize, setCellSize] = useState(120)
+  const [gridCols, setGridCols] = useState(4)
   const [showBounds, setShowBounds] = useState(true)
   const [showDimensions, setShowDimensions] = useState(false)
   const [gridMode, setGridMode] = useState(false)
@@ -80,6 +81,7 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
         if (innerWidth >= 640) cols = Math.min(logos.length, 4)
         else if (innerWidth >= 400) cols = Math.min(logos.length, 3)
         else cols = Math.min(logos.length, 2)
+        setGridCols(cols)
       } else {
         cols = logos.length
       }
@@ -172,9 +174,12 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
       {/* Logo display */}
       <div
         ref={scrollRef}
-        className={`flex items-center justify-center gap-3 sm:gap-4 px-2 py-1 ${
-          gridMode ? 'flex-wrap' : 'overflow-x-auto'
+        className={`gap-3 sm:gap-4 px-2 py-1 ${
+          gridMode
+            ? 'grid justify-items-center'
+            : 'flex items-center justify-center overflow-x-auto'
         }`}
+        style={gridMode ? { gridTemplateColumns: `repeat(${gridCols}, 1fr)` } : undefined}
       >
         {logos.map((logo, i) => {
           const size = computeLogoSize(logo.ratio, cellSize, params)
