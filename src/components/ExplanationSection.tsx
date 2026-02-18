@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from 'react'
 import type { BalancerParams } from '@/lib/balancer'
 import type { LogoMeta } from '@/lib/logos'
 import { FORMULA_CODE, LLM_PROMPT, EXPONENTS, CODE_TABS, generateExportCode } from '@/lib/content'
+import { Tooltip } from './Tooltip'
 import { MiniLane } from './MiniLane'
 import { ExponentSpectrum } from './ExponentSpectrum'
 import { PerceivedWeightBars } from './PerceivedWeightBars'
@@ -22,18 +23,26 @@ function Code({ children }: { children: React.ReactNode }) {
   )
 }
 
-function ParamLink({ children }: { children: React.ReactNode }) {
-  return (
+function ParamLink({ children, tip }: { children: React.ReactNode; tip?: string }) {
+  const btn = (
     <button
       onClick={() =>
         document.getElementById('controls')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
-      title="Scroll to controls"
       className="text-zinc-900 dark:text-zinc-100 underline decoration-dotted underline-offset-2 hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
     >
       {children}
     </button>
   )
+  return tip ? <Tooltip content={tip}>{btn}</Tooltip> : btn
+}
+
+const EXPONENT_TIPS: Record<number, string> = {
+  0: 'All logos the same width. Portrait logos tower over landscape wordmarks.',
+  0.5: 'Equalizes bounding-box area (w \u00d7 h). Better, but portraits still dominate visually.',
+  0.6: 'Tuned default. A practical sweet spot that looks good across diverse logo sets.',
+  0.75: 'Theoretical optimum from perceived size = w\u00b9\u2044\u2074 \u00d7 h\u00b3\u2044\u2074. Equalizes visual weight exactly.',
+  1.0: 'All logos the same height. Wide logos become enormous.',
 }
 
 export function ExplanationSection({ params, logos, onParamsChange }: ExplanationSectionProps) {
@@ -89,15 +98,19 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
           </p>
           <div className="inline-flex flex-col sm:flex-row gap-4 sm:gap-8 rounded-xl bg-zinc-50 dark:bg-zinc-800/30 p-4">
             <div className="space-y-2">
-              <span className="block text-xs font-medium text-zinc-400 dark:text-zinc-500">
-                Equal Width (e = 0)
-              </span>
+              <Tooltip content="All logos get identical width — tall logos dominate the row">
+                <span className="block text-xs font-medium text-zinc-400 dark:text-zinc-500 cursor-default">
+                  Equal Width (e = 0)
+                </span>
+              </Tooltip>
               <MiniLane params={params} exponentOverride={0} cellSize={40} />
             </div>
             <div className="space-y-2">
-              <span className="block text-xs font-medium text-zinc-400 dark:text-zinc-500">
-                Visual (e = 0.6)
-              </span>
+              <Tooltip content="Wider logos get more width, taller logos get less — a tuned visual balance">
+                <span className="block text-xs font-medium text-zinc-400 dark:text-zinc-500 cursor-default">
+                  Visual (e = 0.6)
+                </span>
+              </Tooltip>
               <MiniLane params={params} exponentOverride={0.6} cellSize={40} />
             </div>
           </div>
@@ -120,10 +133,15 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
               The sweet spot: in a horizontal strip our eye weighs{' '}
               <span className="text-zinc-900 dark:text-zinc-100">height more than width</span>.
               Perceptual research suggests roughly{' '}
-              <span className="text-zinc-900 dark:text-zinc-100">
-                perceived size = w<sup>&#188;</sup> &times; h<sup>&#190;</sup>
-              </span>.
-              The Visual preset uses <Code>exponent = 0.6</Code>, a tuned sweet spot
+              <Tooltip content="Height contributes ~75% and width ~25% to how large a shape appears in a horizontal row">
+                <span className="text-zinc-900 dark:text-zinc-100 cursor-default decoration-dotted underline underline-offset-2">
+                  perceived size = w<sup>&#188;</sup> &times; h<sup>&#190;</sup>
+                </span>
+              </Tooltip>.
+              The Visual preset uses{' '}
+              <Tooltip content="A practical midpoint between equal area (0.5) and full perceptual correction (0.75)">
+                <span className="cursor-default"><Code>exponent = 0.6</Code></span>
+              </Tooltip>, a tuned sweet spot
               between equal area and pure perceptual balance that looks best
               across a range of logo sets.
             </p>
@@ -154,7 +172,12 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             </p>
             <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/40 px-5 py-4 font-mono text-xs leading-loose space-y-1">
               <p className="text-zinc-700 dark:text-zinc-300">
-                width &nbsp;= cell &times; <ParamLink>baseline</ParamLink> &times; r<sup><ParamLink>exponent</ParamLink></sup> &times; <ParamLink>scale</ParamLink>
+                width &nbsp;= cell &times;{' '}
+                <ParamLink tip={`Width of a square logo (ratio = 1) \u2014 currently ${params.baseline}`}>baseline</ParamLink>
+                {' '}&times; r<sup>
+                <ParamLink tip={`Controls the balance strategy \u2014 currently ${params.exponent}`}>exponent</ParamLink>
+                </sup> &times;{' '}
+                <ParamLink tip={`Global size multiplier \u2014 currently ${params.scale}`}>scale</ParamLink>
               </p>
               <p className="text-zinc-700 dark:text-zinc-300">height = width / r</p>
             </div>
@@ -165,16 +188,18 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             <ul className="space-y-3 list-none">
               {EXPONENTS.map((e) => (
                 <li key={e.value} className="flex items-center gap-3">
-                  <button
-                    onClick={() => handleExponentChange(e.value)}
-                    className={`font-mono text-xs shrink-0 w-16 text-left transition-colors hover:text-sky-600 dark:hover:text-sky-400 ${
-                      e.highlight
-                        ? 'text-zinc-900 dark:text-zinc-100 font-semibold'
-                        : 'text-zinc-400 dark:text-zinc-500'
-                    }`}
-                  >
-                    {e.label}
-                  </button>
+                  <Tooltip content={EXPONENT_TIPS[e.value]}>
+                    <button
+                      onClick={() => handleExponentChange(e.value)}
+                      className={`font-mono text-xs shrink-0 w-16 text-left transition-colors hover:text-sky-600 dark:hover:text-sky-400 ${
+                        e.highlight
+                          ? 'text-zinc-900 dark:text-zinc-100 font-semibold'
+                          : 'text-zinc-400 dark:text-zinc-500'
+                      }`}
+                    >
+                      {e.label}
+                    </button>
+                  </Tooltip>
                   <span className={`text-sm ${e.highlight ? 'text-zinc-900 dark:text-zinc-100' : ''}`}>
                     {e.highlight ? <span className="font-semibold">{e.desc}</span> : e.desc}
                     {e.extra ?? ''}
@@ -189,7 +214,11 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             {/* Perceived Weight Bars */}
             <div className="space-y-2 pt-2">
               <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                Perceived weight (w<sup>&#188;</sup> &times; h<sup>&#190;</sup>) per logo at current settings:
+                <Tooltip content="When all bars are equal, every logo carries the same visual weight">
+                  <span className="cursor-default">
+                    Perceived weight (w<sup>&#188;</sup> &times; h<sup>&#190;</sup>) per logo at current settings:
+                  </span>
+                </Tooltip>
               </p>
               <PerceivedWeightBars params={params} logos={logos} />
             </div>
@@ -208,8 +237,18 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             </p>
             <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/40 px-5 py-4 font-mono text-xs leading-loose">
               <p className="text-zinc-700 dark:text-zinc-300">
-                <span className="text-zinc-900 dark:text-zinc-100 font-semibold">e<sub>max</sub></span>
-                {' '}= ln(<ParamLink>fitPercent</ParamLink> / (<ParamLink>baseline</ParamLink> &times; <ParamLink>scale</ParamLink>)) / ln(<ParamLink>ratioMax</ParamLink>)
+                <Tooltip content="The highest exponent before the widest logo overflows its cell">
+                  <span className="text-zinc-900 dark:text-zinc-100 font-semibold cursor-default">e<sub>max</sub></span>
+                </Tooltip>
+                {' '}= ln(
+                <ParamLink tip={`Max fraction of cell before clamping \u2014 currently ${params.fitPercent}`}>fitPercent</ParamLink>
+                {' '}/ (
+                <ParamLink tip={`Width of a square logo (ratio = 1) \u2014 currently ${params.baseline}`}>baseline</ParamLink>
+                {' '}&times;{' '}
+                <ParamLink tip={`Global size multiplier \u2014 currently ${params.scale}`}>scale</ParamLink>
+                )) / ln(
+                <ParamLink tip={`Clamp for extreme landscape ratios \u2014 currently ${params.ratioMax}`}>ratioMax</ParamLink>
+                )
               </p>
             </div>
           </div>
