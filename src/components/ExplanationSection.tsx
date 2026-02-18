@@ -144,6 +144,14 @@ function getLogoSize(ratio, cellSize) {
 ${sizes}`
 }
 
+function Code({ children }: { children: React.ReactNode }) {
+  return (
+    <code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded font-mono text-zinc-700 dark:text-zinc-300">
+      {children}
+    </code>
+  )
+}
+
 function ParamLink({ children }: { children: React.ReactNode }) {
   return (
     <button
@@ -174,19 +182,6 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
       onParamsChange({ ...params, exponent: exp })
     },
     [params, onParamsChange]
-  )
-
-  const handleExponentClick = useCallback(
-    (exp: number) => {
-      onParamsChange({ ...params, exponent: exp })
-    },
-    [params, onParamsChange]
-  )
-
-  const code = (text: string) => (
-    <code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded font-mono text-zinc-700 dark:text-zinc-300">
-      {text}
-    </code>
   )
 
   const tabContent = {
@@ -245,9 +240,9 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
           <div className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl space-y-3">
             <p>
               Your first instinct might be to equalize{' '}
-              <span className="text-zinc-900 dark:text-zinc-100">area</span> ({code('exponent = 0.5')}),
+              <span className="text-zinc-900 dark:text-zinc-100">area</span> (<Code>exponent = 0.5</Code>),
               but it still looks wrong &mdash; portrait logos are still much taller.
-              Pure <span className="text-zinc-900 dark:text-zinc-100">equal height</span> ({code('exponent = 1.0')})
+              Pure <span className="text-zinc-900 dark:text-zinc-100">equal height</span> (<Code>exponent = 1.0</Code>)
               overcorrects the other way, making wide logos enormous.
             </p>
             <p>
@@ -257,7 +252,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
               <span className="text-zinc-900 dark:text-zinc-100">
                 perceived size = w<sup>&#188;</sup> &times; h<sup>&#190;</sup>
               </span>.
-              Setting {code('exponent = 0.75')} equalizes that metric &mdash; giving every
+              Setting <Code>exponent = 0.75</Code> equalizes that metric &mdash; giving every
               logo the same visual weight.
             </p>
           </div>
@@ -283,7 +278,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
           <div className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl space-y-4">
             <p>
               Each logo sits in an equal square cell. We set its width as a
-              power of its aspect ratio {code('r = naturalWidth / naturalHeight')}:
+              power of its aspect ratio <Code>r = naturalWidth / naturalHeight</Code>:
             </p>
             <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/40 px-5 py-4 font-mono text-xs leading-loose space-y-1">
               <p className="text-zinc-700 dark:text-zinc-300">
@@ -292,14 +287,14 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
               <p className="text-zinc-700 dark:text-zinc-300">height = width / r</p>
             </div>
             <p>
-              The {code('exponent')} controls what gets equalized.
+              The <Code>exponent</Code> controls what gets equalized.
               Click any value to apply it:
             </p>
             <ul className="space-y-3 list-none">
               {EXPONENTS.map((e) => (
                 <li key={e.value} className="flex items-center gap-3">
                   <button
-                    onClick={() => handleExponentClick(e.value)}
+                    onClick={() => handleExponentChange(e.value)}
                     className={`font-mono text-xs shrink-0 w-16 text-left transition-colors hover:text-sky-600 dark:hover:text-sky-400 ${
                       e.highlight
                         ? 'text-zinc-900 dark:text-zinc-100 font-semibold'
@@ -328,13 +323,13 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             </div>
 
             <p>
-              The {code('\u00be')} exponent comes from{' '}
+              The <Code>{'\u00be'}</Code> exponent comes from{' '}
               <span className="text-zinc-900 dark:text-zinc-100">
                 perceived size = w<sup>0.25</sup> &times; h<sup>0.75</sup>
               </span>. In a horizontal
               strip, height accounts for roughly 75% and width for 25% of perceived size.
-              Substituting {code('h = w / r')} and solving for equal perceived weight
-              gives exactly {code('exponent = \u00be')}.
+              Substituting <Code>h = w / r</Code> and solving for equal perceived weight
+              gives exactly <Code>exponent = {'\u00be'}</Code>.
             </p>
             <p>
               The maximum safe exponent before wide logos overflow:
