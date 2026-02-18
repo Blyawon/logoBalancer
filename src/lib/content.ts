@@ -15,7 +15,8 @@ export const FORMULA_CODE = `function clamp(value, min, max) {
  * Key exponents:
  *   0.0  → equal width  (no correction)
  *   0.5  → equal area   (w × h = const)
- *   0.75 → visual balance (w^¼ × h^¾ = const)
+ *   0.6  → visual default (tuned sweet spot)
+ *   0.75 → perceptual weight (w^¼ × h^¾ = const)
  *   1.0  → equal height (h = const)
  *
  * Max safe exponent (avoids overflow):
@@ -63,23 +64,25 @@ Solution — power-law width mapping:
     height *= fit
 
 Parameters:
-  baseline   = 0.46  width fraction for a square logo (ratio = 1)
-  exponent   = 0.75  balance strategy
+  baseline   = 0.5   width fraction for a square logo (ratio = 1)
+  exponent   = 0.6   balance strategy
   ratioMin   = 0.35  clamp for extreme portrait ratios
   ratioMax   = 6.0   clamp for extreme landscape ratios
-  scale      = 0.57  global size multiplier
-  fitPercent = 0.73  max fraction of cell on either axis
+  scale      = 0.55  global size multiplier
+  fitPercent = 0.7   max fraction of cell on either axis
 
 Key exponents:
   0    equal width  (no correction)
   0.5  equal area   (w * h = const)
-  0.75 visual      (w^0.25 * h^0.75 = const)
+  0.6  visual       (tuned default)
+  0.75 perceptual   (w^0.25 * h^0.75 = const)
   1.0  equal height (h = const)
 
-Why 0.75?
-  Perceived size ~ w^0.25 * h^0.75.
-  Setting exponent = 0.75 equalizes this metric,
-  giving every logo the same visual weight.`
+Why 0.6?
+  Perceived size ~ w^0.25 * h^0.75, which gives a
+  theoretical optimum at 0.75. In practice, 0.6 is a
+  tuned sweet spot between equal area and perceptual
+  weight that looks best across a range of logo sets.`
 
 export interface ExponentEntry {
   value: number
@@ -93,11 +96,18 @@ export const EXPONENTS: ExponentEntry[] = [
   { value: 0, label: 'e = 0', desc: 'Equal width \u2014 no correction', highlight: false },
   { value: 0.5, label: 'e = 0.5', desc: 'Equal area \u2014 mathematically tidy', highlight: false },
   {
+    value: 0.6,
+    label: 'e = 0.6',
+    desc: 'Visual',
+    extra: ' \u2014 tuned default',
+    highlight: true,
+  },
+  {
     value: 0.75,
     label: 'e = 0.75',
-    desc: 'Visual balance',
+    desc: 'Perceptual weight',
     extra: ' \u2014 w\u00b9\u2044\u2074 \u00d7 h\u00b3\u2044\u2074 = const',
-    highlight: true,
+    highlight: false,
   },
   { value: 1.0, label: 'e = 1.0', desc: 'Equal height \u2014 overcorrects for wide logos', highlight: false },
 ]

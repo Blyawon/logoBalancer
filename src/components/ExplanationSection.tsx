@@ -95,9 +95,9 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             </div>
             <div className="space-y-2">
               <span className="block text-xs font-medium text-zinc-400 dark:text-zinc-500">
-                Visual (e = 0.75)
+                Visual (e = 0.6)
               </span>
-              <MiniLane params={params} exponentOverride={0.75} cellSize={40} />
+              <MiniLane params={params} exponentOverride={0.6} cellSize={40} />
             </div>
           </div>
         </section>
@@ -122,8 +122,9 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
               <span className="text-zinc-900 dark:text-zinc-100">
                 perceived size = w<sup>&#188;</sup> &times; h<sup>&#190;</sup>
               </span>.
-              Setting <Code>exponent = 0.75</Code> equalizes that metric &mdash; giving every
-              logo the same visual weight.
+              The Visual preset uses <Code>exponent = 0.6</Code>, a tuned sweet spot
+              between equal area and pure perceptual balance that looks best
+              across a range of logo sets.
             </p>
           </div>
           <div className="rounded-xl bg-zinc-50 dark:bg-zinc-800/30 p-4 sm:p-5 max-w-sm">

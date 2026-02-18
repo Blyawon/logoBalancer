@@ -11,14 +11,14 @@ export const PRESETS: Preset[] = [
   {
     id: 'visual',
     name: 'Visual',
-    description: 'Perceptually balanced \u2014 gives every logo the same visual weight (exponent = \u00be)',
+    description: 'Tuned visual balance \u2014 a practical sweet spot between equal area and perceptual weight (exponent = 0.6)',
     params: {
-      baseline: 0.46,
-      exponent: 0.75,
+      baseline: 0.5,
+      exponent: 0.6,
       ratioMin: 0.35,
       ratioMax: 6.0,
-      scale: 0.57,
-      fitPercent: 0.73,
+      scale: 0.55,
+      fitPercent: 0.7,
     },
   },
   {

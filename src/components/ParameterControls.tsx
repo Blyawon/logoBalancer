@@ -34,7 +34,7 @@ const SLIDER_CONFIGS: SliderConfig[] = [
     min: 0,
     max: 1.0,
     step: 0.01,
-    description: '0 = equal width, 0.5 = equal area, 0.75 = visual',
+    description: '0 = equal width, 0.5 = equal area, 0.6 = visual',
   },
   {
     key: 'ratioMin',
