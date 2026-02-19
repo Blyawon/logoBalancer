@@ -3,6 +3,10 @@ import type { BalancerParams } from '@/lib/balancer'
 import type { LogoMeta } from '@/lib/logos'
 import { FORMULA_CODE, LLM_PROMPT, EXPONENTS, CODE_TABS, generateExportCode } from '@/lib/content'
 import { Tooltip } from './Tooltip'
+import { Code } from './Code'
+import { SectionHeading } from './SectionHeading'
+import { Pill } from './Pill'
+import { CopyButton } from './CopyButton'
 import { MiniLane } from './MiniLane'
 import { ExponentSpectrum } from './ExponentSpectrum'
 import { PerceivedWeightBars } from './PerceivedWeightBars'
@@ -13,14 +17,6 @@ interface ExplanationSectionProps {
   params: BalancerParams
   logos: LogoMeta[]
   onParamsChange: (params: BalancerParams) => void
-}
-
-function Code({ children }: { children: React.ReactNode }) {
-  return (
-    <code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded font-mono text-zinc-700 dark:text-zinc-300">
-      {children}
-    </code>
-  )
 }
 
 function ParamLink({ children, tip }: { children: React.ReactNode; tip?: string }) {
@@ -84,9 +80,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
       <div className="mt-8 sm:mt-12 space-y-8 sm:space-y-10">
         {/* The Problem */}
         <section className="space-y-4">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500">
-            <span className="text-zinc-300 dark:text-zinc-700 mr-2">01</span>The Problem
-          </h3>
+          <SectionHeading number="01" title="The Problem" />
           <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl">
             When you line up logos in a row and give them all the same width,
             portrait logos tower over landscape wordmarks. Try the
@@ -118,9 +112,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
 
         {/* The Insight */}
         <section className="space-y-4">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500">
-            <span className="text-zinc-300 dark:text-zinc-700 mr-2">02</span>The Insight
-          </h3>
+          <SectionHeading number="02" title="The Insight" />
           <div className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl space-y-3">
             <p>
               Your first instinct might be to equalize{' '}
@@ -162,9 +154,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
       <div className="mt-10 sm:mt-14 space-y-8 sm:space-y-10">
         {/* The Math */}
         <section className="space-y-4">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500">
-            <span className="text-zinc-300 dark:text-zinc-700 mr-2">03</span>The Math
-          </h3>
+          <SectionHeading number="03" title="The Math" />
           <div className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl space-y-4">
             <p>
               Each logo sits in an equal square cell. We set its width as a
@@ -257,9 +247,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
         {/* Walkthrough + Explore — side by side on desktop */}
         <div className="grid gap-8 sm:gap-10 lg:grid-cols-2">
           <section className="rounded-xl border border-zinc-100 dark:border-zinc-700/40 p-4 sm:p-5 space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500">
-              Walkthrough
-            </h3>
+            <SectionHeading title="Walkthrough" />
             <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               Pick a logo and trace the computation step by step:
             </p>
@@ -267,9 +255,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
           </section>
 
           <section className="rounded-xl border border-zinc-100 dark:border-zinc-700/40 p-4 sm:p-5 space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500">
-              Explore
-            </h3>
+            <SectionHeading title="Explore" />
             <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               Drag the aspect ratio and watch the algorithm size the rectangle:
             </p>
@@ -283,49 +269,32 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
 
       {/* ─── Zone 3: Code ─── */}
       <div className="mt-10 sm:mt-14">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-500 mb-4">
-          Code
-        </h3>
+        <SectionHeading title="Code" />
 
         {/* Tabbed card */}
-        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-700/40 overflow-hidden">
+        <div className="mt-4 rounded-2xl border border-zinc-200 dark:border-zinc-700/40 overflow-hidden">
           {/* Tab bar */}
           <div className="flex items-center gap-1 px-2 py-2 border-b border-zinc-100 dark:border-zinc-700/40 bg-zinc-50 dark:bg-zinc-800/40">
             {CODE_TABS.map((tab) => (
-              <button
+              <Pill
                 key={tab.id}
+                active={activeTab === tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 ${
-                  activeTab === tab.id
-                    ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
-                    : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+                className={`px-3 py-1.5 rounded-lg text-xs ${
+                  activeTab !== tab.id
+                    ? 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+                    : ''
                 }`}
               >
                 {tab.label}
-              </button>
+              </Pill>
             ))}
             <div className="flex-1" />
-            <button
+            <CopyButton
+              copied={copiedId === activeTab}
               onClick={() => handleCopy(activeTab, tabContent[activeTab])}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
-            >
-              {copiedId === activeTab ? (
-                <>
-                  <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M2.5 6.5l2.5 2.5 4.5-5" className="animate-check" />
-                  </svg>
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="4" y="4" width="7" height="7" rx="1" />
-                    <path d="M8 4V2.5A1.5 1.5 0 006.5 1h-4A1.5 1.5 0 001 2.5v4A1.5 1.5 0 002.5 8H4" />
-                  </svg>
-                  Copy
-                </>
-              )}
-            </button>
+            />
           </div>
 
           {/* Tab content */}

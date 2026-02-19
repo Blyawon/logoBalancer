@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { motion } from 'motion/react'
 import { computeLogoSize } from '@/lib/balancer'
 import type { BalancerParams } from '@/lib/balancer'
 import { Slider } from '@/components/ui/slider'
+
+const sizeSpring = { type: 'spring' as const, stiffness: 300, damping: 26 }
 
 interface RatioExplorerProps {
   params: BalancerParams
@@ -33,9 +36,11 @@ export function RatioExplorer({ params }: RatioExplorerProps) {
           className="flex items-center justify-center border border-dotted border-zinc-300 dark:border-zinc-600 rounded-lg shrink-0"
           style={{ width: CELL, height: CELL }}
         >
-          <div
-            className="rounded-sm bg-zinc-400 dark:bg-zinc-500 transition-all duration-150"
-            style={{ width: size.width, height: size.height }}
+          <motion.div
+            className="rounded-sm bg-zinc-400 dark:bg-zinc-500"
+            initial={false}
+            animate={{ width: size.width, height: size.height }}
+            transition={sizeSpring}
           />
         </div>
         <div className="text-xs font-mono space-y-1 text-zinc-500 dark:text-zinc-400">

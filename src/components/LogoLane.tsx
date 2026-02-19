@@ -3,6 +3,7 @@ import type { LogoMeta } from '@/lib/logos'
 import { computeLogoSize } from '@/lib/balancer'
 import type { BalancerParams } from '@/lib/balancer'
 import { LogoItem } from './LogoItem'
+import { Pill } from './Pill'
 
 interface LogoLaneProps {
   params: BalancerParams
@@ -146,9 +147,9 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
       {/* Toolbar */}
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div className="flex items-center gap-1.5">
-          <ToggleBtn active={gridMode} onClick={() => setGridMode(!gridMode)} title="Wrap logos into a grid">Grid</ToggleBtn>
-          <ToggleBtn active={showBounds} onClick={() => setShowBounds(!showBounds)} title="Show cell boundaries">Bounds</ToggleBtn>
-          <ToggleBtn active={showDimensions} onClick={() => setShowDimensions(!showDimensions)} title="Show pixel dimensions">Sizes</ToggleBtn>
+          <Pill active={gridMode} onClick={() => setGridMode(!gridMode)} title="Wrap logos into a grid">Grid</Pill>
+          <Pill active={showBounds} onClick={() => setShowBounds(!showBounds)} title="Show cell boundaries">Bounds</Pill>
+          <Pill active={showDimensions} onClick={() => setShowDimensions(!showDimensions)} title="Show pixel dimensions">Sizes</Pill>
         </div>
         <div className="flex items-center gap-1.5">
           <button
@@ -212,21 +213,5 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
         className="hidden"
       />
     </div>
-  )
-}
-
-function ToggleBtn({ active, onClick, title, children }: { active: boolean; onClick: () => void; title?: string; children: React.ReactNode }) {
-  return (
-    <button
-      onClick={onClick}
-      title={title}
-      className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors duration-150 ${
-        active
-          ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
-          : 'bg-zinc-100 text-zinc-500 hover:text-zinc-700 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300'
-      }`}
-    >
-      {children}
-    </button>
   )
 }

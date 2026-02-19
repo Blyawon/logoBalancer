@@ -1,3 +1,4 @@
+import { motion } from 'motion/react'
 import type { LogoMeta } from '@/lib/logos'
 import type { LogoSize } from '@/lib/balancer'
 
@@ -10,29 +11,27 @@ interface LogoItemProps {
   onRemove?: () => void
 }
 
+const sizeSpring = { type: 'spring' as const, stiffness: 300, damping: 26 }
+
 export function LogoItem({ logo, size, cellSize, showBounds = true, showDimensions = false, onRemove }: LogoItemProps) {
   return (
     <div className="flex flex-col items-center gap-3 min-w-0">
-      <div
+      <motion.div
         className={`relative flex items-center justify-center rounded-lg transition-colors duration-150 ${
           showBounds ? 'border border-dotted border-zinc-200 dark:border-zinc-700/40' : ''
         }`}
-        style={{
-          width: cellSize,
-          height: cellSize,
-          transition: 'width 300ms ease-out, height 300ms ease-out',
-        }}
+        initial={false}
+        animate={{ width: cellSize, height: cellSize }}
+        transition={sizeSpring}
       >
-        <img
+        <motion.img
           src={logo.src}
           alt={logo.name}
           draggable={false}
           className="block object-contain"
-          style={{
-            width: size.width,
-            height: size.height,
-            transition: 'width 300ms ease-out, height 300ms ease-out',
-          }}
+          initial={false}
+          animate={{ width: size.width, height: size.height }}
+          transition={sizeSpring}
         />
         {onRemove && (
           <button
@@ -45,7 +44,7 @@ export function LogoItem({ logo, size, cellSize, showBounds = true, showDimensio
             </svg>
           </button>
         )}
-      </div>
+      </motion.div>
       <div className="flex flex-col items-center gap-0.5">
         <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-800 dark:text-zinc-100 truncate max-w-full">{logo.name}</span>
         <span className="text-xs font-mono tabular-nums text-zinc-400 dark:text-zinc-500">

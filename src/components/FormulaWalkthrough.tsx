@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import type { BalancerParams } from '@/lib/balancer'
 import type { LogoMeta } from '@/lib/logos'
+import { Pill } from './Pill'
 
 interface FormulaWalkthroughProps {
   params: BalancerParams
@@ -78,17 +79,18 @@ export function FormulaWalkthrough({ params, logos }: FormulaWalkthroughProps) {
     <div className="space-y-3">
       <div className="flex items-center gap-1.5 flex-wrap">
         {logos.map((l) => (
-          <button
+          <Pill
             key={l.id}
+            active={selectedId === l.id}
             onClick={() => setSelectedId(l.id)}
-            className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
-              selectedId === l.id
-                ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
-                : 'bg-zinc-100 text-zinc-500 hover:text-zinc-700 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300'
+            className={`px-2.5 py-1 rounded-md text-xs ${
+              selectedId !== l.id
+                ? 'bg-zinc-100 text-zinc-500 hover:text-zinc-700 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300'
+                : ''
             }`}
           >
             {l.name}
-          </button>
+          </Pill>
         ))}
       </div>
       <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/40 px-3 sm:px-4 py-3 font-mono text-xs space-y-0.5 overflow-x-auto">

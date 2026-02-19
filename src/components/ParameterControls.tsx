@@ -181,9 +181,9 @@ export function ParameterControls({
                 onPresetChange(preset.id)
                 document.getElementById('logo-lane')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
               }}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-150 ${
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-150 ${
                 activePreset === preset.id
-                  ? 'bg-zinc-900 text-white ring-2 ring-zinc-900/10 dark:bg-white dark:text-zinc-900 dark:ring-white/10'
+                  ? 'bg-zinc-900 text-white shadow-sm dark:bg-zinc-100 dark:text-zinc-900'
                   : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-200'
               }`}
               title={`Press ${i + 1} to activate`}

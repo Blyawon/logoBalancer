@@ -1,3 +1,4 @@
+import { motion } from 'motion/react'
 import { computeLogoSize } from '@/lib/balancer'
 import type { BalancerParams } from '@/lib/balancer'
 import type { LogoMeta } from '@/lib/logos'
@@ -6,6 +7,8 @@ interface PerceivedWeightBarsProps {
   params: BalancerParams
   logos: LogoMeta[]
 }
+
+const barSpring = { type: 'spring' as const, stiffness: 300, damping: 26 }
 
 export function PerceivedWeightBars({ params, logos }: PerceivedWeightBarsProps) {
   const cellSize = 100
@@ -25,9 +28,11 @@ export function PerceivedWeightBars({ params, logos }: PerceivedWeightBarsProps)
             {d.name}
           </span>
           <div className="flex-1 h-4 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300 dark:from-zinc-400 dark:to-zinc-600 rounded-full transition-all duration-300"
-              style={{ width: `${(d.pw / maxPw) * 100}%` }}
+            <motion.div
+              className="h-full bg-gradient-to-r from-zinc-500 to-zinc-300 dark:from-zinc-400 dark:to-zinc-600 rounded-full"
+              initial={false}
+              animate={{ width: `${(d.pw / maxPw) * 100}%` }}
+              transition={barSpring}
             />
           </div>
           <span className="text-[11px] font-mono tabular-nums text-zinc-400 dark:text-zinc-500 w-8 shrink-0">
