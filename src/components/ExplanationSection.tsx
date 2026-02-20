@@ -280,11 +280,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
                 key={tab.id}
                 active={activeTab === tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs ${
-                  activeTab !== tab.id
-                    ? 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
-                    : ''
-                }`}
+                size="sm"
               >
                 {tab.label}
               </Pill>

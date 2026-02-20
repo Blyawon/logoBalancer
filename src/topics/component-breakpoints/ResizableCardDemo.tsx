@@ -1,18 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { ResizableContainer } from './ResizableContainer'
+import { Pill } from '@/components/Pill'
 import { SampleCard } from './SampleCard'
-import { StrategyToggle } from './StrategyToggle'
 
 type Strategy = 'media' | 'container' | 'fluid'
 
 const SIMULATED_VIEWPORT = 1440
 const CARD_BREAKPOINT = 480
-
-const OPTIONS: { value: Strategy; label: string; shortLabel?: string; color: 'amber' | 'emerald' }[] = [
-  { value: 'media', label: 'Screen-based', shortLabel: 'Screen', color: 'amber' },
-  { value: 'container', label: 'Space-based', shortLabel: 'Container', color: 'emerald' },
-  { value: 'fluid', label: 'Space-based fluid', shortLabel: 'Fluid', color: 'emerald' },
-]
 
 export function ResizableCardDemo() {
   const [strategy, setStrategy] = useState<Strategy>('media')
@@ -51,9 +45,21 @@ export function ResizableCardDemo() {
 
   return (
     <div className={`space-y-3 transition-opacity duration-200 ${measured ? 'opacity-100' : 'opacity-0'}`}>
-      {/* Strategy controls (F8: short labels on mobile, F14: shared toggle) */}
       <div className="flex flex-wrap items-center gap-3">
-        <StrategyToggle options={OPTIONS} value={strategy} onChange={setStrategy} />
+        <div className="flex gap-1.5">
+          <Pill active={strategy === 'media'} onClick={() => setStrategy('media')}>
+            <span className="sm:hidden">Screen</span>
+            <span className="hidden sm:inline">Screen-based</span>
+          </Pill>
+          <Pill active={strategy === 'container'} onClick={() => setStrategy('container')}>
+            <span className="sm:hidden">Container</span>
+            <span className="hidden sm:inline">Space-based</span>
+          </Pill>
+          <Pill active={strategy === 'fluid'} onClick={() => setStrategy('fluid')}>
+            <span className="sm:hidden">Fluid</span>
+            <span className="hidden sm:inline">Space-based fluid</span>
+          </Pill>
+        </div>
 
         <span className="text-xs text-zinc-400 dark:text-zinc-500 hidden sm:inline">
           {strategy === 'media'

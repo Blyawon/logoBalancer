@@ -452,11 +452,6 @@ function DeviceBreakerDemo() {
             key={s.id}
             active={active === i}
             onClick={() => setActive(i)}
-            className={`px-2.5 py-1.5 rounded-full text-xs ${
-              active !== i
-                ? 'bg-zinc-100 dark:bg-zinc-800/60 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
-                : ''
-            }`}
           >
             <span className="sm:hidden">{s.shortLabel}</span>
             <span className="hidden sm:inline">{s.label}</span>

@@ -1,14 +1,9 @@
 import { useState } from 'react'
 import { ProseCallout } from '@/components/Callout'
+import { Pill } from '@/components/Pill'
 import { SampleButton } from './SampleButton'
-import { StrategyToggle } from './StrategyToggle'
 
 type Strategy = 'media' | 'container'
-
-const OPTIONS: { value: Strategy; label: string; shortLabel: string; color: 'amber' | 'emerald' }[] = [
-  { value: 'media', label: 'Sized by screen', shortLabel: 'Screen', color: 'amber' },
-  { value: 'container', label: 'Sized by space', shortLabel: 'Space', color: 'emerald' },
-]
 
 export function ButtonHero() {
   const [strategy, setStrategy] = useState<Strategy>('media')
@@ -23,9 +18,15 @@ export function ButtonHero() {
         Same space, same component &mdash; different result?
       </p>
 
-      {/* Toggle (F14: shared component) */}
-      <div className="flex items-center justify-center">
-        <StrategyToggle options={OPTIONS} value={strategy} onChange={setStrategy} />
+      <div className="flex items-center justify-center gap-1.5">
+        <Pill active={strategy === 'media'} onClick={() => setStrategy('media')}>
+          <span className="sm:hidden">Screen</span>
+          <span className="hidden sm:inline">Sized by screen</span>
+        </Pill>
+        <Pill active={strategy === 'container'} onClick={() => setStrategy('container')}>
+          <span className="sm:hidden">Space</span>
+          <span className="hidden sm:inline">Sized by space</span>
+        </Pill>
       </div>
 
       {/* ── Desktop: full-width app with sidebar ── */}

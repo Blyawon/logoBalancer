@@ -83,11 +83,7 @@ export function FormulaWalkthrough({ params, logos }: FormulaWalkthroughProps) {
             key={l.id}
             active={selectedId === l.id}
             onClick={() => setSelectedId(l.id)}
-            className={`px-2.5 py-1 rounded-md text-xs ${
-              selectedId !== l.id
-                ? 'bg-zinc-100 text-zinc-500 hover:text-zinc-700 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300'
-                : ''
-            }`}
+            size="sm"
           >
             {l.name}
           </Pill>

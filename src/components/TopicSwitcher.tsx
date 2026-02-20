@@ -51,7 +51,12 @@ function DesktopPillBar({ topics, activeId, onChange }: TopicSwitcherProps) {
   }, [activeId])
 
   useEffect(() => {
+    // Measure immediately, then again after a frame (layout may not be settled)
     measureIndicator()
+    const raf = requestAnimationFrame(measureIndicator)
+    // Re-measure when fonts finish loading (button widths change)
+    document.fonts.ready.then(measureIndicator)
+    return () => cancelAnimationFrame(raf)
   }, [measureIndicator])
 
   useEffect(() => {
@@ -69,13 +74,15 @@ function DesktopPillBar({ topics, activeId, onChange }: TopicSwitcherProps) {
         ref={containerRef}
         className="relative inline-flex items-center gap-1 rounded-full p-1 bg-zinc-100/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-lg shadow-zinc-900/10 dark:shadow-black/40 border border-zinc-200/60 dark:border-zinc-700/50 ring-1 ring-black/[0.04] dark:ring-white/[0.06]"
       >
-        {/* Sliding indicator */}
-        <motion.div
-          className="absolute top-1 bottom-1 rounded-full bg-white dark:bg-zinc-700 shadow-sm"
-          initial={false}
-          animate={ready ? { left: indicator.left, width: indicator.width } : undefined}
-          transition={indicatorSpring}
-        />
+        {/* Sliding indicator — only mounts after first measurement */}
+        {ready && (
+          <motion.div
+            className="absolute top-1 bottom-1 rounded-full bg-white dark:bg-zinc-700 shadow-sm"
+            initial={{ left: indicator.left, width: indicator.width }}
+            animate={{ left: indicator.left, width: indicator.width }}
+            transition={indicatorSpring}
+          />
+        )}
 
         {/* Pills */}
         {topics.map((topic) => (
@@ -142,13 +149,13 @@ function MobileFab({ topics, activeId, onChange }: TopicSwitcherProps) {
 
       {/* FAB + menu container */}
       <div
-        className="fixed right-4 z-50"
-        style={{ bottom: `calc(1.25rem + env(safe-area-inset-bottom, 0px))` }}
+        className="fixed z-50"
+        style={{ right: 'calc(1rem + 4px)', bottom: `calc(1.25rem + 4px + env(safe-area-inset-bottom, 0px))` }}
       >
         {/* Menu items — appear above the FAB */}
         <AnimatePresence>
           {open && (
-            <div className="absolute bottom-14 right-0 flex flex-col items-end gap-2 mb-2">
+            <div className="absolute bottom-16 right-0 flex flex-col items-end gap-2 mb-2">
               {topics.map((topic, i) => (
                 <motion.button
                   key={topic.id}
@@ -199,7 +206,7 @@ function MobileFab({ topics, activeId, onChange }: TopicSwitcherProps) {
         {/* FAB button */}
         <motion.button
           onClick={() => setOpen(!open)}
-          className="w-12 h-12 rounded-full bg-zinc-100/90 dark:bg-zinc-800/90 backdrop-blur-xl shadow-lg shadow-zinc-900/10 dark:shadow-black/40 border border-zinc-200/60 dark:border-zinc-700/50 ring-1 ring-black/[0.04] dark:ring-white/[0.06] flex items-center justify-center focus-visible:outline-none"
+          className="w-14 h-14 rounded-full bg-zinc-100/90 dark:bg-zinc-800/90 backdrop-blur-xl shadow-lg shadow-zinc-900/10 dark:shadow-black/40 border border-zinc-200/60 dark:border-zinc-700/50 ring-1 ring-black/[0.04] dark:ring-white/[0.06] flex items-center justify-center focus-visible:outline-none"
           whileTap={{ scale: 0.92 }}
           aria-label={open ? 'Close menu' : 'Open topic menu'}
         >

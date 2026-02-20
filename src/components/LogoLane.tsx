@@ -153,9 +153,9 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
       {/* Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-4">
         <div className="flex items-center gap-1.5">
-          <Pill active={gridMode} onClick={() => setGridMode(!gridMode)} title="Wrap logos into a grid">Grid</Pill>
-          <Pill active={showBounds} onClick={() => setShowBounds(!showBounds)} title="Show cell boundaries">Bounds</Pill>
-          <Pill active={showDimensions} onClick={() => setShowDimensions(!showDimensions)} title="Show pixel dimensions">Sizes</Pill>
+          <Pill active={gridMode} onClick={() => setGridMode(!gridMode)} title="Wrap logos into a grid" mode="multi">Grid</Pill>
+          <Pill active={showBounds} onClick={() => setShowBounds(!showBounds)} title="Show cell boundaries" mode="multi">Bounds</Pill>
+          <Pill active={showDimensions} onClick={() => setShowDimensions(!showDimensions)} title="Show pixel dimensions" mode="multi">Sizes</Pill>
         </div>
         <div className="flex items-center gap-1.5">
           <button

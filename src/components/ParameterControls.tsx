@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import type { BalancerParams } from '@/lib/balancer'
 import { PRESETS, DEFAULT_PARAMS } from '@/lib/presets'
 import { Slider } from '@/components/ui/slider'
+import { Pill } from '@/components/Pill'
 
 interface ParameterControlsProps {
   params: BalancerParams
@@ -175,21 +176,17 @@ export function ParameterControls({
       <div className="space-y-2">
         <div className="flex items-center gap-2 flex-wrap">
           {PRESETS.map((preset, i) => (
-            <button
+            <Pill
               key={preset.id}
+              active={activePreset === preset.id}
               onClick={() => {
                 onPresetChange(preset.id)
                 document.getElementById('logo-lane')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
               }}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-150 ${
-                activePreset === preset.id
-                  ? 'bg-zinc-900 text-white shadow-sm dark:bg-zinc-100 dark:text-zinc-900'
-                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-200'
-              }`}
               title={`Press ${i + 1} to activate`}
             >
               {preset.name}
-            </button>
+            </Pill>
           ))}
           {!activePreset && (
             <button

@@ -1,13 +1,8 @@
 import { useState } from 'react'
+import { Pill } from '@/components/Pill'
 import { ProseCallout } from '@/components/Callout'
-import { StrategyToggle } from './StrategyToggle'
 
 type TokenStrategy = 'device' | 'density'
-
-const OPTIONS: { value: TokenStrategy; label: string; shortLabel: string; color: 'amber' | 'emerald' }[] = [
-  { value: 'device', label: 'Device Tokens', shortLabel: 'Device', color: 'amber' },
-  { value: 'density', label: 'Density Tokens', shortLabel: 'Density', color: 'emerald' },
-]
 
 export function TokenDemo() {
   const [strategy, setStrategy] = useState<TokenStrategy>('device')
@@ -16,8 +11,16 @@ export function TokenDemo() {
 
   return (
     <div className="space-y-4">
-      {/* Toggle (F14: shared component) */}
-      <StrategyToggle options={OPTIONS} value={strategy} onChange={setStrategy} />
+      <div className="flex gap-1.5">
+        <Pill active={strategy === 'device'} onClick={() => setStrategy('device')}>
+          <span className="sm:hidden">Device</span>
+          <span className="hidden sm:inline">Device Tokens</span>
+        </Pill>
+        <Pill active={strategy === 'density'} onClick={() => setStrategy('density')}>
+          <span className="sm:hidden">Density</span>
+          <span className="hidden sm:inline">Density Tokens</span>
+        </Pill>
+      </div>
 
       {/* Single app layout panel */}
       <div className="rounded-xl border border-zinc-200 dark:border-zinc-700/40 overflow-hidden">
