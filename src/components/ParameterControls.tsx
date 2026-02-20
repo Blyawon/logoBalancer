@@ -170,7 +170,7 @@ export function ParameterControls({
     : null
 
   return (
-    <div id="controls" className="rounded-2xl border border-zinc-100 p-4 sm:p-6 space-y-5 sm:space-y-6 dark:border-zinc-700/40">
+    <div id="controls" className="rounded-2xl border border-zinc-100 p-3 sm:p-6 space-y-5 sm:space-y-6 dark:border-zinc-700/40">
       {/* Preset Pills */}
       <div className="space-y-2">
         <div className="flex items-center gap-2 flex-wrap">
@@ -212,7 +212,7 @@ export function ParameterControls({
       <div className="border-t border-zinc-100 dark:border-zinc-700/40" />
 
       {/* Slider Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {SLIDER_CONFIGS.map((config) => (
           <div key={config.key} className="space-y-3">
             <div className="flex items-center justify-between">

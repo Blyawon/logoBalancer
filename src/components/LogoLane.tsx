@@ -60,6 +60,7 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
   const [showBounds, setShowBounds] = useState(true)
   const [showDimensions, setShowDimensions] = useState(false)
   const [gridMode, setGridMode] = useState(false)
+  const [autoGrid, setAutoGrid] = useState(false)
   const [dragging, setDragging] = useState(false)
 
   useEffect(() => {
@@ -77,8 +78,13 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
       const padRight = parseFloat(cs.paddingRight) || 0
       const innerWidth = w - padLeft - padRight
 
+      // Auto-enable grid on narrow containers
+      setAutoGrid(innerWidth < 400)
+
+      const effectiveGrid = gridMode || innerWidth < 400
+
       let cols: number
-      if (gridMode) {
+      if (effectiveGrid) {
         if (innerWidth >= 640) cols = Math.min(logos.length, 4)
         else if (innerWidth >= 400) cols = Math.min(logos.length, 3)
         else cols = Math.min(logos.length, 2)
@@ -145,7 +151,7 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
       )}
 
       {/* Toolbar */}
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-4">
         <div className="flex items-center gap-1.5">
           <Pill active={gridMode} onClick={() => setGridMode(!gridMode)} title="Wrap logos into a grid">Grid</Pill>
           <Pill active={showBounds} onClick={() => setShowBounds(!showBounds)} title="Show cell boundaries">Bounds</Pill>
@@ -176,11 +182,11 @@ export function LogoLane({ params, logos, onUpload, onRemoveLogo, onRemoveAll, h
       <div
         ref={scrollRef}
         className={`gap-3 sm:gap-4 px-2 py-1 ${
-          gridMode
+          (gridMode || autoGrid)
             ? 'grid justify-items-center'
             : 'flex items-center justify-center overflow-x-auto'
         }`}
-        style={gridMode ? { gridTemplateColumns: `repeat(${gridCols}, 1fr)` } : undefined}
+        style={(gridMode || autoGrid) ? { gridTemplateColumns: `repeat(${gridCols}, 1fr)` } : undefined}
       >
         {logos.map((logo, i) => {
           const size = computeLogoSize(logo.ratio, cellSize, params)

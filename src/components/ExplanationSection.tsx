@@ -160,7 +160,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
               Each logo sits in an equal square cell. We set its width as a
               power of its aspect ratio <Code>r = naturalWidth / naturalHeight</Code>:
             </p>
-            <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/40 px-5 py-4 font-mono text-xs leading-loose space-y-1">
+            <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/40 px-3 sm:px-5 py-4 font-mono text-xs leading-loose space-y-1 overflow-x-auto">
               <p className="text-zinc-700 dark:text-zinc-300">
                 width &nbsp;= cell &times;{' '}
                 <ParamLink tip={`Width of a square logo (ratio = 1) \u2014 currently ${params.baseline}`}>baseline</ParamLink>
@@ -225,8 +225,8 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             <p>
               The maximum safe exponent before wide logos overflow:
             </p>
-            <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/40 px-5 py-4 font-mono text-xs leading-loose">
-              <p className="text-zinc-700 dark:text-zinc-300">
+            <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/40 px-3 sm:px-5 py-4 font-mono text-xs leading-loose overflow-x-auto">
+              <p className="text-zinc-700 dark:text-zinc-300 whitespace-nowrap">
                 <Tooltip content="The highest exponent before the widest logo overflows its cell">
                   <span className="text-zinc-900 dark:text-zinc-100 font-semibold cursor-default">e<sub>max</sub></span>
                 </Tooltip>
@@ -246,7 +246,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
 
         {/* Walkthrough + Explore — side by side on desktop */}
         <div className="grid gap-8 sm:gap-10 lg:grid-cols-2">
-          <section className="rounded-xl border border-zinc-100 dark:border-zinc-700/40 p-4 sm:p-5 space-y-3">
+          <section className="rounded-xl border border-zinc-100 dark:border-zinc-700/40 p-3 sm:p-5 space-y-3 min-w-0 overflow-hidden">
             <SectionHeading title="Walkthrough" />
             <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               Pick a logo and trace the computation step by step:
@@ -254,7 +254,7 @@ export function ExplanationSection({ params, logos, onParamsChange }: Explanatio
             <FormulaWalkthrough params={params} logos={logos} />
           </section>
 
-          <section className="rounded-xl border border-zinc-100 dark:border-zinc-700/40 p-4 sm:p-5 space-y-3">
+          <section className="rounded-xl border border-zinc-100 dark:border-zinc-700/40 p-3 sm:p-5 space-y-3 min-w-0 overflow-hidden">
             <SectionHeading title="Explore" />
             <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               Drag the aspect ratio and watch the algorithm size the rectangle:

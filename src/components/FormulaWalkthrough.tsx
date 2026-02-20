@@ -93,10 +93,10 @@ export function FormulaWalkthrough({ params, logos }: FormulaWalkthroughProps) {
           </Pill>
         ))}
       </div>
-      <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/40 px-3 sm:px-4 py-3 font-mono text-xs space-y-0.5 overflow-x-auto">
+      <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/40 px-2 sm:px-4 py-3 font-mono text-[11px] sm:text-xs space-y-0.5 overflow-x-auto">
         {steps.map((step, i) => (
-          <div key={i} className="flex items-baseline gap-1.5 sm:gap-2 min-w-0">
-            <span className="text-zinc-900 dark:text-zinc-100 font-semibold shrink-0 w-16 sm:w-20 text-right">
+          <div key={i} className="flex items-baseline gap-1 sm:gap-2 min-w-0">
+            <span className="text-zinc-900 dark:text-zinc-100 font-semibold shrink-0 w-12 sm:w-20 text-right">
               {step.label}
             </span>
             <span className="text-zinc-400 dark:text-zinc-600">=</span>

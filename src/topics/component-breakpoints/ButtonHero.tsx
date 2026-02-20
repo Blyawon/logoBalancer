@@ -5,9 +5,9 @@ import { StrategyToggle } from './StrategyToggle'
 
 type Strategy = 'media' | 'container'
 
-const OPTIONS: { value: Strategy; label: string; color: 'amber' | 'emerald' }[] = [
-  { value: 'media', label: 'Sized by screen', color: 'amber' },
-  { value: 'container', label: 'Sized by space', color: 'emerald' },
+const OPTIONS: { value: Strategy; label: string; shortLabel: string; color: 'amber' | 'emerald' }[] = [
+  { value: 'media', label: 'Sized by screen', shortLabel: 'Screen', color: 'amber' },
+  { value: 'container', label: 'Sized by space', shortLabel: 'Space', color: 'emerald' },
 ]
 
 export function ButtonHero() {
@@ -49,7 +49,7 @@ export function ButtonHero() {
         {/* App layout: sidebar + main — main always visible (F3) */}
         <div className="flex bg-white dark:bg-zinc-900">
           {/* Sidebar */}
-          <div className={`w-[240px] sm:w-[396px] shrink-0 border-r p-3 flex flex-col transition-colors duration-300 ${
+          <div className={`w-[55%] sm:w-[396px] shrink-0 border-r p-3 flex flex-col transition-colors duration-300 ${
             !isMedia
               ? 'border-emerald-200 dark:border-emerald-800/30 bg-emerald-50/20 dark:bg-emerald-900/5'
               : 'border-zinc-100 dark:border-zinc-700/40 bg-zinc-50/30 dark:bg-zinc-800/10'
@@ -97,7 +97,7 @@ export function ButtonHero() {
       </div>
 
       {/* ── Phone: fixed realistic width (F4) ── */}
-      <div className={`w-[240px] sm:w-[396px] rounded-xl overflow-hidden border transition-colors duration-300 ${
+      <div className={`w-[55%] sm:w-[396px] rounded-xl overflow-hidden border transition-colors duration-300 ${
         !isMedia
           ? 'border-emerald-200 dark:border-emerald-800/30'
           : 'border-zinc-200 dark:border-zinc-700/40'

@@ -263,8 +263,8 @@ function ResponsibilityDiagram() {
   return (
     <div className="space-y-4">
       {/* Correct model */}
-      <Callout variant="good" label="Layout owns the breakpoints" className="rounded-xl p-4 sm:p-5">
-        <div className="flex gap-3">
+      <Callout variant="good" label="Layout owns the breakpoints" className="rounded-xl p-3 sm:p-5">
+        <div className="flex gap-2 sm:gap-3">
           <DiagramRegion label="Sidebar" width="200px" color="emerald" flex="none" className="w-[35%] sm:w-[30%]">
             <DiagramLine name="Button" result="small" />
             <DiagramLine name="Card" result="stacked" />
@@ -279,8 +279,8 @@ function ResponsibilityDiagram() {
       </Callout>
 
       {/* Broken model */}
-      <Callout variant="warn" label="Every component checks the screen" className="rounded-xl p-4 sm:p-5">
-        <div className="flex gap-3">
+      <Callout variant="warn" label="Every component checks the screen" className="rounded-xl p-3 sm:p-5">
+        <div className="flex gap-2 sm:gap-3">
           <DiagramRegion label="Sidebar" width="200px" color="amber" flex="none" className="w-[35%] sm:w-[30%]">
             <DiagramLine name="Button" result="large!" warn />
             <DiagramLine name="Card" result="horizontal!" warn />

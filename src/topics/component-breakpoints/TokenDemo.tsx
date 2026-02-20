@@ -4,9 +4,9 @@ import { StrategyToggle } from './StrategyToggle'
 
 type TokenStrategy = 'device' | 'density'
 
-const OPTIONS: { value: TokenStrategy; label: string; color: 'amber' | 'emerald' }[] = [
-  { value: 'device', label: 'Device Tokens', color: 'amber' },
-  { value: 'density', label: 'Density Tokens', color: 'emerald' },
+const OPTIONS: { value: TokenStrategy; label: string; shortLabel: string; color: 'amber' | 'emerald' }[] = [
+  { value: 'device', label: 'Device Tokens', shortLabel: 'Device', color: 'amber' },
+  { value: 'density', label: 'Density Tokens', shortLabel: 'Density', color: 'emerald' },
 ]
 
 export function TokenDemo() {
