@@ -11,6 +11,7 @@ export interface TopicDef {
 
 const importLogoBalancer = () => import('./logo-balancer')
 const importComponentBreakpoints = () => import('./component-breakpoints')
+const importDimension = () => import('./dimension')
 
 export const TOPICS: TopicDef[] = [
   {
@@ -26,6 +27,13 @@ export const TOPICS: TopicDef[] = [
     subtitle: 'Why breakpoints should never be tied to components — design for space, not screens.',
     component: lazy(importComponentBreakpoints),
     preload: importComponentBreakpoints,
+  },
+  {
+    id: 'dimension',
+    label: 'Dimension',
+    subtitle: 'Build spacing and sizing scales with interactive curve control, fluid tokens, and live preview.',
+    component: lazy(importDimension),
+    preload: importDimension,
   },
 ]
 
